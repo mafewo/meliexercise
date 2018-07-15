@@ -1,0 +1,11 @@
+{
+  "name": "deploy MELI",
+  "description": "deploy to meli exercise",
+  "keywords": [
+    "go",
+    "MELI",
+    "exercise"
+  ],
+  "website": "http://github.com/mafewo/meliexercise",
+  "repository": "http://github.com/mafewo/meliexercise"
+}
