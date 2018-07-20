@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/mafewo/meliexercise/models"
@@ -50,10 +49,9 @@ func GenerateDate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	output, err := json.Marshal(sliceSS)
-	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "aplication/json")
-	w.Write(output)
+	output := "Datos del clima generado correctamente. consultar /resume [GET]"
+
+	_response(w, output)
 }
 
 // CalculateMovement is a function

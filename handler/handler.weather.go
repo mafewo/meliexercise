@@ -69,6 +69,10 @@ func CalculateWeather(sliceSS []models.SolarSystem) error {
 		Collection: collection,
 		Data:       nil,
 	}
+	err = mw.DropCollection()
+	if err != nil {
+		return err
+	}
 	day := 0
 	for _, ss := range sliceSS {
 		day++
@@ -85,8 +89,7 @@ func CalculateWeather(sliceSS []models.SolarSystem) error {
 		} else {
 			weatherData.Estate = "Unknown"
 		}
-
-		_, err := mw.Insert(weatherData)
+		_, err = mw.Insert(weatherData)
 		if err != nil {
 			return err
 		}
@@ -103,6 +106,8 @@ func CalculateResumen(weathers []models.Weather) map[string]interface{} {
 	rain := 0
 	unknown := 0
 	day := 0
+	max := weathers[35].Perimeter
+	var maxdays []int
 	for _, w := range weathers {
 		day++
 		switch w.Estate {
@@ -111,6 +116,9 @@ func CalculateResumen(weathers []models.Weather) map[string]interface{} {
 		case "Optimal":
 			optimal++
 		case "Rain":
+			if max == w.Perimeter {
+				maxdays = append(maxdays, day)
+			}
 			rain++
 		default:
 			unknown++
@@ -120,6 +128,7 @@ func CalculateResumen(weathers []models.Weather) map[string]interface{} {
 	resumen["Optimal"] = optimal
 	resumen["Rain"] = rain
 	resumen["Unknown"] = unknown
+	resumen["DaysStrom"] = maxdays
 	return resumen
 }
 

@@ -53,12 +53,21 @@ func (mw *ModelWeather) Getday(c int32) ([]Weather, error) {
 	return weathers, nil
 }
 
-// GetMaxAll obteins a slice with
-func (mw *ModelWeather) GetMaxAll() ([]Weather, error) {
-	var weathers []Weather
-	err := mw.Collection.Find(nil).Sort("{Perimeter:-1}").All(&weathers)
+// GetMaxRainAll obteins a slice with
+func (mw *ModelWeather) GetMaxRainAll() (Weather, error) {
+	weather := Weather{}
+	err := mw.Collection.Find(bson.M{"Estate": "Rain"}).Sort("{Perimeter:-1}").One(&weather)
 	if err != nil {
-		return weathers, err
+		return weather, err
 	}
-	return weathers, nil
+	return weather, nil
+}
+
+// DropCollection drop to colecction from the database
+func (mw *ModelWeather) DropCollection() error {
+	_, err := mw.Collection.RemoveAll(nil)
+	if err != nil {
+		return err
+	}
+	return nil
 }
