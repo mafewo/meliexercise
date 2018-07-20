@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 	"time"
 
 	"github.com/mafewo/meliexercise/config"
@@ -25,7 +26,7 @@ func main() {
 	config.Read(iniPath)
 
 	/// Run http/https Servers
-	errs := Run(":8888" /*+os.Getenv("PORT")*/, router, map[string]bool{"http": true, "https": true})
+	errs := Run(":"+os.Getenv("PORT"), router, map[string]bool{"http": true, "https": true})
 
 	/// This will run forever until channel receives error
 	select {
