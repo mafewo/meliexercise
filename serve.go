@@ -17,6 +17,8 @@ func getRouter() *mux.Router {
 	router := mux.NewRouter().StrictSlash(false)
 	router.HandleFunc("/", handler.Index).Methods("OPTIONS", "GET")
 	router.HandleFunc("/generate", jj(handler.GenerateDate)).Methods("OPTIONS", "GET")
+	router.HandleFunc("/resumen", jj(handler.GetResumenWheather)).Methods("OPTIONS", "GET")
+	router.HandleFunc("/weather", jj(handler.GetWeatherByDay)).Methods("OPTIONS", "GET")
 
 	router.NotFoundHandler = http.HandlerFunc(handler.NotFound)
 	router.Use(middleware.CORS)

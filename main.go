@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"log"
 	"os"
 	"time"
@@ -18,7 +17,6 @@ var TimeZone *time.Location
 
 func main() {
 
-	flag.Parse()
 	/// Main
 	router := getRouter()
 
@@ -28,15 +26,11 @@ func main() {
 	config.Read(iniPath)
 
 	/// Run http/https Servers
-	errs := Run(":"+os.Getenv("PORT"), router, map[string]bool{"http": true, "https": true})
+	errs := Run(os.Getenv("PORT"), router, map[string]bool{"http": true, "https": true})
 
 	/// This will run forever until channel receives error
 	select {
 	case err := <-errs:
 		log.Printf("No se pudieron iniciar los servidores !!! (error: %s)", err)
 	}
-}
-
-func init() {
-	flag.StringVar(&flagPath, "inipath", "./", "Ruta al archivo .INI, por defecto es './app.ini'")
 }

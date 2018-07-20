@@ -31,6 +31,10 @@ func NotFound(w http.ResponseWriter, r *http.Request) {
 	w.Write(output)
 }
 
-func GenerateDate(w http.ResponseWriter, r *http.Request) {
-
+// Params: w http.ResponseWriter, d (*models.ModelBudget || *models.ModelBudgets)
+func _response(w http.ResponseWriter, d interface{}) {
+	//seteo el header y retorno 200
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(d)
 }
