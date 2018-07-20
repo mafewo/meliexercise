@@ -1,11 +1,12 @@
 package mongo
 
 import (
+	"crypto/tls"
 	"log"
+	"net"
 	"time"
 
 	"github.com/mafewo/meliexercise/config"
-
 	"gopkg.in/mgo.v2"
 )
 
@@ -38,14 +39,27 @@ func NewMG(user string, pass string, host string, port string, table string, db 
 	}
 }
 
-//InitializeDatabase abre la conexion mysql
+//InitializeDatabase abre la conexion mongo
 func (c *ConnMG) InitializeDatabase() (*mgo.Session, *mgo.Collection, error) {
 	log.Println("Consultando MongoDB ...")
-	timeOut := time.Duration(3 * time.Second)
-	mg, err := mgo.DialWithTimeout("mongodb://"+c.host, timeOut)
+	dialInfo, err := mgo.ParseURL(c.host)
 	if err != nil {
-		return nil, nil, err
+		log.Println(err)
 	}
+	dialInfo.DialServer = func(addr *mgo.ServerAddr) (net.Conn, error) {
+		tlsConfig := &tls.Config{}
+		conn, err := tls.Dial("tcp", addr.String(), tlsConfig)
+		if err != nil {
+			log.Println(err)
+		}
+		return conn, err
+	}
+	dialInfo.Timeout = time.Duration(3 * time.Second)
+	//dialInfo.FailFast = true
+	dialInfo.Username = c.user
+	dialInfo.Password = c.pass
+	mg, err := mgo.DialWithInfo(dialInfo)
+
 	mg.SetPoolLimit(config.MgMaxConn)
 	collection := mg.DB(c.db).C(c.table)
 	return mg, collection, nil

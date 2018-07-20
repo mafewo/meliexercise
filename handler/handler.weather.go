@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/mafewo/meliexercise/config"
 	"github.com/mafewo/meliexercise/database/mongo"
 	"github.com/mafewo/meliexercise/models"
 	"github.com/mafewo/meliexercise/msj"
@@ -150,12 +149,12 @@ func DroughtDay(ss models.SolarSystem) bool {
 func _connect() (*mgo.Session, *mgo.Collection, error) {
 	//realizo la conexion a la DB
 	session, collection, err := mongo.NewMG(
-		config.Mongo["main"].User,
-		config.Mongo["main"].Pass,
-		config.Mongo["main"].Host,
-		config.Mongo["main"].Port,
+		"Melidb",
+		"@melidb",
+		"cluster0-shard-00-00-nc9ip.mongodb.net",
+		"27017",
 		"weather",
-		config.Mongo["main"].DB,
+		"test",
 	).InitializeDatabase()
 
 	if err != nil {
