@@ -99,12 +99,6 @@
 			"path": "gopkg.in/mgo.v2/internal/scram",
 			"revision": "3f83fa5005286a7fe593b055f0d7771a7dce4655",
 			"revisionTime": "2016-08-18T02:01:20Z"
-		},
-		{
-			"checksumSHA1": "s9ePt9ExyZVAJ7CZ+5CnpNvv95w=",
-			"path": "maxi-presupuesto-api/config",
-			"revision": "e4bd613ede85f93e946f4e2b7a9862d70e1e8c33",
-			"revisionTime": "2018-07-18T19:15:41Z"
 		}
 	],
 	"rootPath": "github.com/mafewo/meliexercise"

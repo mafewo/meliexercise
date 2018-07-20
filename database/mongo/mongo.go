@@ -2,8 +2,9 @@ package mongo
 
 import (
 	"log"
-	"maxi-presupuesto-api/config"
 	"time"
+
+	"github.com/mafewo/meliexercise/config"
 
 	"gopkg.in/mgo.v2"
 )
