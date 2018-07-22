@@ -53,7 +53,11 @@ func GetResumenWheather(w http.ResponseWriter, r *http.Request) {
 		msj.Set(w, err.Error(), 404).ReturnJSON()
 		return
 	}
-	resumen := CalculateResumen(weathers)
+	resumen, err := CalculateResumen(weathers)
+	if err != nil {
+		msj.Set(w, err.Error(), 404).ReturnJSON()
+		return
+	}
 	_response(w, resumen)
 }
 
@@ -99,15 +103,19 @@ func CalculateWeather(sliceSS []models.SolarSystem) error {
 }
 
 // CalculateResumen calulate the weather resumen to Solar System from to 10 years
-func CalculateResumen(weathers []models.Weather) map[string]interface{} {
+func CalculateResumen(weathers []models.Weather) (map[string]interface{}, error) {
+
+	var days []int
 	resumen := make(map[string]interface{})
 	drougth := 0
 	optimal := 0
 	rain := 0
 	unknown := 0
 	day := 0
-	max := weathers[35].Perimeter
-	var maxdays []int
+	max, err := GetMaxRain()
+	if err != nil {
+		return resumen, err
+	}
 	for _, w := range weathers {
 		day++
 		switch w.Estate {
@@ -117,7 +125,7 @@ func CalculateResumen(weathers []models.Weather) map[string]interface{} {
 			optimal++
 		case "Rain":
 			if max == w.Perimeter {
-				maxdays = append(maxdays, day)
+				days = append(days, day)
 			}
 			rain++
 		default:
@@ -128,8 +136,28 @@ func CalculateResumen(weathers []models.Weather) map[string]interface{} {
 	resumen["Optimal"] = optimal
 	resumen["Rain"] = rain
 	resumen["Unknown"] = unknown
-	resumen["DaysStrom"] = maxdays
-	return resumen
+	resumen["DaysStrom"] = days
+	return resumen, nil
+}
+
+// GetMaxRain obtein a max perimeter of the rain days
+func GetMaxRain() (int, error) {
+	var max models.Weather
+	session, collection, err := _connect()
+	if err != nil {
+		return max.Perimeter, err
+	}
+	defer session.Close()
+	mw := &models.ModelWeather{
+		Conn:       session,
+		Collection: collection,
+		Data:       nil,
+	}
+	max, err = mw.GetMaxRain()
+	if err != nil {
+		return max.Perimeter, err
+	}
+	return max.Perimeter, nil
 }
 
 // OptimalDay return if they are parallels

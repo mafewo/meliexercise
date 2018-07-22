@@ -1,6 +1,8 @@
 package models
 
 import (
+	"fmt"
+
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -54,10 +56,11 @@ func (mw *ModelWeather) Getday(c int32) ([]Weather, error) {
 }
 
 // GetMaxRainAll obteins a slice with
-func (mw *ModelWeather) GetMaxRainAll() (Weather, error) {
+func (mw *ModelWeather) GetMaxRain() (Weather, error) {
 	weather := Weather{}
-	err := mw.Collection.Find(bson.M{"Estate": "Rain"}).Sort("{Perimeter:-1}").One(&weather)
+	err := mw.Collection.Find(bson.M{"estate": "Rain"}).Sort("-perimeter").One(&weather)
 	if err != nil {
+		fmt.Printf("Error al traer maximo: %v", err)
 		return weather, err
 	}
 	return weather, nil
